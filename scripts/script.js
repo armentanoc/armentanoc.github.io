@@ -1,11 +1,11 @@
 const generateSVGFromJSON = (data) => {
-  const rectWidth = 10; 
-  const rectHeight = 10; 
-  const padding = 2; 
+  const rectWidth = 10;
+  const rectHeight = 10;
+  const padding = 2;
   const cols = 53; // 53 weeks in a year
   const rows = 7; // 7 days in a week
-  const xOffset = 10; 
-  const yOffset = 20; 
+  const xOffset = 10;
+  const yOffset = 20;
   const dayWidth = rectWidth + padding;
   const dayHeight = rectHeight + padding;
   const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -38,7 +38,7 @@ const generateSVGFromJSON = (data) => {
   const dates = Object.keys(result);
 
   // Initialize `displayedMonths` outside of the loop
-  const displayedMonths = new Set(); 
+  const displayedMonths = new Set();
 
   dates.forEach((date, index) => {
     const weekOfYear = Math.floor(index / rows);
@@ -50,7 +50,6 @@ const generateSVGFromJSON = (data) => {
     const color = getColor(level);
 
     const dateObj = new Date(date);
-    console.log(dateObj);
     const month = dateObj.getMonth();
 
     if (dayOfWeek === 0 && !displayedMonths.has(month)) {
@@ -71,7 +70,7 @@ const generateSVGFromJSON = (data) => {
   // Calculate SVG width based on the last month marker
   const lastMonthMarker = monthMarkers[monthMarkers.length - 1] || { x: xOffset };
   const svgWidth = Math.max(
-    (cols * dayWidth) + xOffset + 10, 
+    (cols * dayWidth) + xOffset + 10,
     lastMonthMarker.x + rectWidth + 10
   );
 
@@ -95,11 +94,19 @@ const generateSVGFromJSON = (data) => {
 };
 
 fetch('assets/calendar.json')
-  .then(response => response.json())
-  .then(data => {
+    .then(response => response.json())
+    .then(data => {
       const svgContent = generateSVGFromJSON(data);
-      document.getElementById('calendar-svg').innerHTML = svgContent;
-  })
-  .catch(error => {
-      console.error('Error fetching or processing data:', error);
-  });
+        document.getElementById('calendar-svg').innerHTML = svgContent;
+
+        const viewBtn = document.getElementById('view-btn');
+        const svgBlob = new Blob([svgContent], { type: 'image/svg+xml' });
+        const svgUrl = URL.createObjectURL(svgBlob);
+
+        viewBtn.addEventListener('click', () => {
+            window.open(svgUrl, '_blank');
+        });
+      })
+    .catch(error => {
+        console.error('Error fetching or processing data:', error);
+    });

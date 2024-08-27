@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contribution Calendar</title>
     <style>
+         body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
         .svg-container {
             border: 1px solid #ddd;
             width: 100%; 
@@ -19,10 +26,19 @@
             height: auto; 
             display: block; 
         }
+
+        #view-btn{
+            margin: 10px 0;
+            padding: 5px 20px;
+            font-size: 8px;
+            cursor: pointer;
+            display: block; 
+        }
     </style>
 </head>
 <body>
     <div class="svg-container" id="calendar-svg"></div>
+    <button id="view-btn">Visualizar SVG</button>
     <script src="scripts/script.js"></script>
 </body>
 </html>
