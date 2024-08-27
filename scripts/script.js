@@ -37,7 +37,6 @@ const generateSVGFromJSON = (data) => {
   let monthMarkers = [];
   const dates = Object.keys(result);
 
-  // Initialize `displayedMonths` outside of the loop
   const displayedMonths = new Set();
 
   dates.forEach((date, index) => {
@@ -64,10 +63,8 @@ const generateSVGFromJSON = (data) => {
       </rect>`;
   });
 
-  // Ensure month markers are sorted by x position
   monthMarkers.sort((a, b) => a.x - b.x);
 
-  // Calculate SVG width based on the last month marker
   const lastMonthMarker = monthMarkers[monthMarkers.length - 1] || { x: xOffset };
   const svgWidth = Math.max(
     (cols * dayWidth) + xOffset + 10,
@@ -94,19 +91,37 @@ const generateSVGFromJSON = (data) => {
 };
 
 fetch('assets/calendar.json')
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();
+    })
     .then(data => {
-      const svgContent = generateSVGFromJSON(data);
-        document.getElementById('calendar-svg').innerHTML = svgContent;
+        console.log('Fetched JSON data:', data); // Debugging statement
+
+        const svgContent = generateSVGFromJSON(data);
+        console.log('Generated SVG content:', svgContent); // Debugging statement
+        
+        const calendarSvgElement = document.getElementById('calendar-svg');
+        if (calendarSvgElement) {
+            calendarSvgElement.innerHTML = svgContent;
+        } else {
+            console.error('SVG container element not found.');
+        }
 
         const viewBtn = document.getElementById('view-btn');
-        const svgBlob = new Blob([svgContent], { type: 'image/svg+xml' });
-        const svgUrl = URL.createObjectURL(svgBlob);
+        if (viewBtn) {
+            const svgBlob = new Blob([svgContent], { type: 'image/svg+xml' });
+            const svgUrl = URL.createObjectURL(svgBlob);
 
-        viewBtn.addEventListener('click', () => {
-            window.open(svgUrl, '_blank');
-        });
-      })
+            viewBtn.addEventListener('click', () => {
+                window.open(svgUrl, '_blank');
+            });
+        } else {
+            console.error('View button element not found.');
+        }
+    })
     .catch(error => {
         console.error('Error fetching or processing data:', error);
     });
