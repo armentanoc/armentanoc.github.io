@@ -33,6 +33,7 @@ It should be something like this:
 Then, you can visit the deployed website on: 
 
 ```bash
+https://gitlab-chartbuilder.vercel.app/
 ```
 
 Upload your JSON file and Download your SVG with your contribution chart :) 
@@ -41,6 +42,6 @@ Upload your JSON file and Download your SVG with your contribution chart :)
 If you'd like to contribute to this project, please fork the repository and submit a pull request with your changes. 
 
 ## Contact
-GitHub: armentanoc
-LinkedIn: armentanocarolina
-Email: armentanocarolina@gmail.com
+- GitHub: armentanoc
+- LinkedIn: armentanocarolina
+- Email: armentanocarolina@gmail.com
