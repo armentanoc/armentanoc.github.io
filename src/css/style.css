@@ -1,15 +1,16 @@
 body {
-    display: block;
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin: 0 auto;
+    margin: 0;
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     color: #333;
     text-align: center;
-    height: 100vh;
+    height: 100vh; 
     padding: 0 10px;
+    box-sizing: border-box; 
 }
 
 h1 {
@@ -26,7 +27,7 @@ h1 {
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    margin: 0 auto;
+    margin: 0; 
 }
 
 .svg-container {
