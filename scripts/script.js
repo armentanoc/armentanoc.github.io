@@ -110,16 +110,22 @@ fetch('assets/calendar.json')
             console.error('SVG container element not found.');
         }
 
-        const viewBtn = document.getElementById('view-btn');
-        if (viewBtn) {
+        const downloadBtn = document.getElementById('download-btn');
+        if (downloadBtn) {
             const svgBlob = new Blob([svgContent], { type: 'image/svg+xml' });
             const svgUrl = URL.createObjectURL(svgBlob);
 
-            viewBtn.addEventListener('click', () => {
-                window.open(svgUrl, '_blank');
+            downloadBtn.addEventListener('click', () => {
+                const a = document.createElement('a');
+                a.href = svgUrl;
+                a.download = 'calendar.svg'; 
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(svgUrl); 
             });
         } else {
-            console.error('View button element not found.');
+            console.error('Download button element not found.');
         }
     })
     .catch(error => {
