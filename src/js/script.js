@@ -97,6 +97,7 @@ function handleFileSelect(event) {
     reader.onload = function (e) {
       try {
         showError('');
+        document.getElementById('calendar-svg').innerHTML = ''
         const data = JSON.parse(e.target.result);
         console.log('Uploaded JSON data:', data);
 
@@ -105,7 +106,10 @@ function handleFileSelect(event) {
 
         const calendarSvgElement = document.getElementById('calendar-svg');
         if (calendarSvgElement) {
+          document.getElementById('error-message').style.display = 'none';
+          calendarSvgElement.style.display = 'block';
           calendarSvgElement.innerHTML = svgContent;
+          document.getElementById('error-message')
         } else {
           showError('SVG container element not found.');
         }
@@ -147,7 +151,9 @@ function showError(message) {
   if (errorMessageDiv) {
       errorMessageDiv.textContent = ''; 
       if (message) {
-          errorMessageDiv.textContent = message; 
+        document.getElementById('calendar-svg').style.display = 'none';
+        errorMessageDiv.style.display = 'block';
+        errorMessageDiv.textContent = message; 
       }
   } else {
       console.error(message);
