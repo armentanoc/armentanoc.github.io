@@ -90,44 +90,68 @@ const generateSVGFromJSON = (data) => {
     </svg>`;
 };
 
-fetch('assets/calendar.json')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok ' + response.statusText);
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log('Fetched JSON data:', data); // Debugging statement
+function handleFileSelect(event) {
+  const file = event.target.files[0];
+  if (file && file.type === 'application/json') {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      try {
+        showError('');
+        const data = JSON.parse(e.target.result);
+        console.log('Uploaded JSON data:', data);
 
         const svgContent = generateSVGFromJSON(data);
-        console.log('Generated SVG content:', svgContent); // Debugging statement
-        
+        console.log('Generated SVG content:', svgContent);
+
         const calendarSvgElement = document.getElementById('calendar-svg');
         if (calendarSvgElement) {
-            calendarSvgElement.innerHTML = svgContent;
+          calendarSvgElement.innerHTML = svgContent;
         } else {
-            console.error('SVG container element not found.');
+          showError('SVG container element not found.');
         }
 
         const downloadBtn = document.getElementById('download-btn');
         if (downloadBtn) {
-            const svgBlob = new Blob([svgContent], { type: 'image/svg+xml' });
-            const svgUrl = URL.createObjectURL(svgBlob);
-
-            downloadBtn.addEventListener('click', () => {
-                const a = document.createElement('a');
-                a.href = svgUrl;
-                a.download = 'calendar.svg'; 
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(svgUrl); 
-            });
+          downloadBtn.removeEventListener('click', () => downloadSVG(file, svgContent));
+          downloadBtn.addEventListener('click', () => downloadSVG(file, svgContent));
+          downloadBtn.style.display = 'inline';
         } else {
-            console.error('Download button element not found.');
+          showError('Download button element not found.');
         }
-    })
-    .catch(error => {
-        console.error('Error fetching or processing data:', error);
-    });
+      } catch (error) {
+        showError('Error parsing JSON: ' + error.message);
+      }
+    };
+    reader.readAsText(file);
+  } else {
+    showError('Please upload a valid JSON file.');
+  }
+}
+
+function downloadSVG(file, svgContent) {
+  const filename = file.name.replace(/\.[^/.]+$/, "") || 'calendar';
+  const svgBlob = new Blob([svgContent], { type: 'image/svg+xml' });
+  const svgUrl = URL.createObjectURL(svgBlob);
+
+  const a = document.createElement('a');
+  a.href = svgUrl;
+  a.download = `${filename}.svg`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(svgUrl);
+}
+
+function showError(message) {
+  const errorMessageDiv = document.getElementById('error-message');
+  if (errorMessageDiv) {
+      errorMessageDiv.textContent = ''; 
+      if (message) {
+          errorMessageDiv.textContent = message; 
+      }
+  } else {
+      console.error(message);
+  }
+}
+
+document.getElementById('file-input').addEventListener('change', handleFileSelect);
