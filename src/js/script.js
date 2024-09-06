@@ -40,15 +40,15 @@ const generateSVGFromJSON = (data) => {
   const displayedMonths = new Set();
 
   dates.forEach((date, index) => {
+    const dateObj = new Date(date);
+    const dayOfWeek = (dateObj.getDay() + 7) % 7;
     const weekOfYear = Math.floor(index / rows);
-    const dayOfWeek = index % rows;
 
     const x = xOffset + weekOfYear * dayWidth;
     const y = yOffset + dayOfWeek * dayHeight;
     const level = result[date];
     const color = getColor(level);
 
-    const dateObj = new Date(date);
     const month = dateObj.getMonth();
 
     if (dayOfWeek === 0 && !displayedMonths.has(month)) {
