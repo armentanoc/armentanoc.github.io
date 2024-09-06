@@ -71,7 +71,7 @@ const generateSVGFromJSON = (data) => {
     lastMonthMarker.x + rectWidth + 10
   );
 
-  const svgHeight = rows * dayHeight + yOffset + 10;
+  const svgHeight = rows * dayHeight + yOffset + 15;
 
   const monthLabels = monthMarkers.map(marker => `
     <text x="${marker.x + rectWidth / 2}" y="${yOffset - 5}" text-anchor="middle" fill="#333" font-size="10">
@@ -79,11 +79,14 @@ const generateSVGFromJSON = (data) => {
     </text>
   `).join('');
 
+  const totalContributions = Object.values(result).reduce((sum, value) => sum + value, 0);
+
   return `
     <svg viewBox="0 0 ${svgWidth} ${svgHeight}" 
          preserveAspectRatio="xMidYMid meet" 
          xmlns="http://www.w3.org/2000/svg">
       <g transform="translate(0, 0)">
+        <text x="${svgWidth - 515}" y="${svgHeight - 0.2}" text-anchor="end" fill="#333" font-size="10">Total Contributions ${filterYear}: ${totalContributions}</text>
         ${rects}
         ${monthLabels}
       </g>
