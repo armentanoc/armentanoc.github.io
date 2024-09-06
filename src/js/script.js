@@ -18,7 +18,7 @@ const generateSVGFromJSON = (data) => {
     .sort((a, b) => a - b);
 
   const startDate = new Date(dateKeys[0].getFullYear(), 0, 2); // start on January 1st
-  const endDate = new Date(dateKeys[0].getFullYear(), 11, 32); // end on December 31st
+  const endDate = new Date(dateKeys[0].getFullYear(), 11, 30); // end on December 31st
 
   const result = {};
   for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
