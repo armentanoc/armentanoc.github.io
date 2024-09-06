@@ -116,8 +116,8 @@ function handleFileSelect(event) {
 
         const downloadBtn = document.getElementById('download-btn');
         if (downloadBtn) {
-          downloadBtn.removeEventListener('click', () => downloadSVG(file, svgContent));
-          downloadBtn.addEventListener('click', () => downloadSVG(file, svgContent));
+          downloadBtn.removeEventListener('click', () => downloadPNG(file, svgContent));
+          downloadBtn.addEventListener('click', () => downloadPNG(file, svgContent));
           downloadBtn.style.display = 'inline';
         } else {
           showError('Download button element not found.');
@@ -132,18 +132,49 @@ function handleFileSelect(event) {
   }
 }
 
-function downloadSVG(file, svgContent) {
+function downloadPNG(file, svgContent) {
   const filename = file.name.replace(/\.[^/.]+$/, "") || 'calendar';
+
   const svgBlob = new Blob([svgContent], { type: 'image/svg+xml' });
   const svgUrl = URL.createObjectURL(svgBlob);
 
-  const a = document.createElement('a');
-  a.href = svgUrl;
-  a.download = `${filename}.svg`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(svgUrl);
+  const img = new Image();
+  img.src = svgUrl;
+
+  img.onload = function () {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    const svgElement = document.createElement('svg');
+    svgElement.innerHTML = svgContent;
+    document.body.appendChild(svgElement);
+
+    const svgWidth = svgElement.clientWidth;
+    const svgHeight = svgElement.clientHeight;
+
+    document.body.removeChild(svgElement);
+
+    canvas.width = svgWidth;
+    canvas.height = svgHeight;
+
+    ctx.drawImage(img, 0, 0, svgWidth, svgHeight);
+
+    const pngUrl = canvas.toDataURL('image/png');
+
+    const a = document.createElement('a');
+    a.href = pngUrl;
+    a.download = `${filename}.png`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    URL.revokeObjectURL(svgUrl);
+  };
+
+  img.onerror = function () {
+    console.error('Error loading SVG image for PNG conversion.');
+    showError('Error converting SVG to PNG.');
+  };
 }
 
 function showError(message) {
